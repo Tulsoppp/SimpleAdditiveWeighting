@@ -14,6 +14,7 @@
         <a href="index.php?page=Kriteria">Kriteria</a>
         <a href="index.php?page=Alternatif">Alternatif</a>
         <a href="index.php?page=Matriks">Matriks</a>
+        <a href="index.php?page=Rank">Ranking</a>
         <a href="index.php?page=logout" class="logout">Logout</a>
     </div>
     <div class="top-kanan">

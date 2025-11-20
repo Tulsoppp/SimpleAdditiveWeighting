@@ -30,6 +30,9 @@ if(isset($_GET['page'])){
     else if($page == 'editA'){
         require_once 'page/editAlternatif.php';
     }
+    else if($page == 'Rank'){
+        require_once 'page/Rank.php';
+    }
     else{
         require_once 'page/404.php';
     }

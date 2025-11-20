@@ -65,9 +65,14 @@ function getAlternatif(){
     $alt->execute();
     return $alt->fetchAll();
 }
-function getAlternatifName(){
+function getAlternatifName($id= 0){
     $alt = DBC->prepare("SELECT * FROM alternatif WHERE ID_ALTERNATIF = :id");
-    $alt->execute([':id'=>$_GET['id']]);
+    if(isset($_GET['id'])){
+        $alt->execute([':id'=>$_GET['id']]);
+    }else{
+        $alt->execute([':id'=>$id]);
+
+    }
     return $alt->fetch(); 
 }
 function getSkorAlt(){
@@ -146,6 +151,60 @@ function hapusAlternatif(){
 }
 function getMaks(){
     $db = DBC->prepare("SELECT kriteria.*, MAX(skor.SKOR) AS MAKS FROM kriteria LEFT JOIN skor ON kriteria.ID_KRITERIA = skor.ID_KRITERIA GROUP BY kriteria.ID_KRITERIA ORDER BY kriteria.ID_KRITERIA ASC");
+    $db->execute();
+    return $db->fetchAll();
+}
+function normalize(){
+    $db=DBC->prepare("SELECT 
+    s.ID_ALTERNATIF,
+    SUM( (s.SKOR / m.max_skor) * k.BOBOT ) AS normalize
+    FROM skor s
+    JOIN kriteria k ON s.ID_KRITERIA = k.ID_KRITERIA
+    JOIN (
+        SELECT ID_KRITERIA, MAX(SKOR) AS max_skor
+        FROM skor
+        GROUP BY ID_KRITERIA
+    ) m ON s.ID_KRITERIA = m.ID_KRITERIA
+    GROUP BY s.ID_ALTERNATIF
+    ORDER BY s.ID_ALTERNATIF;
+    ");
+    $db->execute();
+    return $db->fetchAll();
+
+}
+function getRanking(){
+
+    $db=DBC->prepare("SELECT 
+    s.ID_ALTERNATIF,
+    SUM( (s.SKOR / m.max_skor) * k.BOBOT ) AS normalize
+    FROM skor s
+    JOIN kriteria k ON s.ID_KRITERIA = k.ID_KRITERIA
+    JOIN (
+        SELECT ID_KRITERIA, MAX(SKOR) AS max_skor
+        FROM skor
+        GROUP BY ID_KRITERIA
+    ) m ON s.ID_KRITERIA = m.ID_KRITERIA
+    GROUP BY s.ID_ALTERNATIF
+    ORDER BY normalize DESC;
+    ");
+    $db->execute();
+    return $db->fetchAll();
+}
+function getRankingFill($limit){
+
+    $db=DBC->prepare("SELECT 
+    s.ID_ALTERNATIF,
+    SUM( (s.SKOR / m.max_skor) * k.BOBOT ) AS normalize
+    FROM skor s
+    JOIN kriteria k ON s.ID_KRITERIA = k.ID_KRITERIA
+    JOIN (
+        SELECT ID_KRITERIA, MAX(SKOR) AS max_skor
+        FROM skor
+        GROUP BY ID_KRITERIA
+    ) m ON s.ID_KRITERIA = m.ID_KRITERIA
+    GROUP BY s.ID_ALTERNATIF
+    ORDER BY normalize DESC LIMIT $limit;
+    ");
     $db->execute();
     return $db->fetchAll();
 }

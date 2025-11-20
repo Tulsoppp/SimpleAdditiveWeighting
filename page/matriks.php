@@ -2,7 +2,11 @@
 $jumlahKriteria = getjumlahKriteria();
 $skor = getSkor();
 $maksSkor = getMaks();
+$jumAlt = getAlternatif();
+$kt = getKriteria();
+$normalize = normalize();
 ?>
+
 <h1>Matriks</h1>
 <table>
     <thead>
@@ -40,7 +44,10 @@ $maksSkor = getMaks();
     </tfoot>
 </table>
 <br>
+<br>
+<br>
 <hr>
+<br>
 <h1>Matriks Ternormalisasi</h1>
 <table>
     <thead>
@@ -76,6 +83,26 @@ $maksSkor = getMaks();
             <?php endforeach?>
         </tr>
         
+        <?php endforeach?>
+    </tbody>
+</table>
+<br>
+<br>
+<br>
+<hr>
+<br>
+<h1>Kalkulasi</h1>
+<table>
+    <thead>
+        <th colspan="3">Kalkulasi</th>
+    </thead>
+    <tbody>
+        <?php $i=1; foreach( $normalize as $normal ):?>
+            <tr>
+                <td>A<?= $i++?></td>
+                <td><?= getAlternatifName($normal['ID_ALTERNATIF'])['ALTERNATIF'] ?></td>
+                <td><?= $normal['normalize'] ?></td>
+            </tr>
         <?php endforeach?>
     </tbody>
 </table>
